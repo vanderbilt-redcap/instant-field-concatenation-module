@@ -22,26 +22,34 @@
 	},
 
 	"project-settings": [
-                {
-			"key": "destination",
-			"name": "Destination Field",
-			"required": true,
-			"type": "field-list",
-			"repeatable": false
-		},
 		{
-			"key": "source",
-			"name": "Source Fields (in order)",
-			"required": true,
-			"type": "field-list",
-			"repeatable": true 
-		},
-		{
-			"key": "spaces",
-			"name": "Put Spaces Between the Items?",
-			"required": false,
-			"type": "checkbox",
-			"repeatable": false
+			"key" : "concatenated-fields",
+			"name" : "Concatenated Field",
+			"type" : "sub_settings",
+			"repeatable" : true,
+			"sub_settings" : [
+				{
+					"key": "destination",
+					"name": "Destination Field",
+					"required": true,
+					"type": "field-list",
+					"repeatable": false
+				},
+				{
+					"key": "source",
+					"name": "Source Fields (in order)",
+					"required": true,
+					"type": "field-list",
+					"repeatable": true
+				},
+				{
+					"key": "spaces",
+					"name": "Put Spaces Between the Items?",
+					"required": false,
+					"type": "checkbox",
+					"repeatable": false
+				}
+			]
 		}
 	]
 }

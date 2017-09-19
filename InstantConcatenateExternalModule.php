@@ -16,40 +16,42 @@ class InstantConcatenateExternalModule extends AbstractExternalModule
 	function concatenate($project_id, $record, $instrument, $event_id, $group_id, $survey_hash = NULL, $response_id = NULL) {
 		if ($project_id) {
 			# get the specifications
-            $module_data = ExternalModules::getProjectSettingsAsArray(array("vanderbilt_instantConcatenate"), $project_id);
-			$destField = $module_data['destination']['value'];
-			$srcFields = $module_data['source']['value'];
-			if (!is_array($srcFields)) {
-				$srcFields = array($srcFields);
-			}
-			$spaces = $module_data['spaces']['value'];
-            $space = "";
-            if ($spaces) {
-                $space = " ";
-            }
+			foreach($this->getSubSettings('concatenated-fields') as $field_data) {
+				var_dump($field_data);
+				$destField = $field_data['destination'];
+				$srcFields = $field_data['source'];
+				if (!is_array($srcFields)) {
+					$srcFields = array($srcFields);
+				}
+				$spaces = $field_data['spaces'];
+				$space = "";
+				if ($spaces) {
+					$space = " ";
+				}
 
-			if ($destField) {
-				echo "<script>
-                    $(document).ready(function() {
-                        console.log('Instant Concatenate Loaded');
-					    function concat() {
-						    var value = '';
-						    var src = ".json_encode($srcFields).";
-						    var space = '".$space."';
-						    for (var i=0; i < src.length; i++) {
-							    if (i > 0) {
-								    value = value + space;
-							    }
-							    value = value + $('[name=\"'+src[i]+'\"]').val();
-						    }
-                            console.log('Concatenating to '+value);
-						    $('[name=\"".$destField."\"]').val(value);
-					    }";
-						foreach ($srcFields as $src) {
-							echo "$('[name=\"".$src."\"]').change(function() { concat(); }); ";
-						}
-				echo " });\n";
-				echo "</script>";
+				if ($destField) {
+					echo "<script>
+						$(document).ready(function() {
+							console.log('Instant Concatenate Loaded');
+							function concat() {
+								var value = '';
+								var src = " . json_encode($srcFields) . ";
+								var space = '" . $space . "';
+								for (var i=0; i < src.length; i++) {
+									if (i > 0) {
+										value = value + space;
+									}
+									value = value + $('[name=\"'+src[i]+'\"]').val();
+								}
+								console.log('Concatenating to '+value);
+								$('[name=\"" . $destField . "\"]').val(value);
+							}";
+					foreach ($srcFields as $src) {
+						echo "$('[name=\"" . $src . "\"]').change(function() { concat(); }); ";
+					}
+					echo " });\n";
+					echo "</script>";
+				}
 			}
 		}
 	}
