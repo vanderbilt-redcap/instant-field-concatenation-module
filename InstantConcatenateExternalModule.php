@@ -17,7 +17,6 @@ class InstantConcatenateExternalModule extends AbstractExternalModule
 		if ($project_id) {
 			# get the specifications
 			foreach($this->getSubSettings('concatenated-fields') as $field_data) {
-				var_dump($field_data);
 				$destField = $field_data['destination'];
 				$srcFields = $field_data['source'];
 				if (!is_array($srcFields)) {
