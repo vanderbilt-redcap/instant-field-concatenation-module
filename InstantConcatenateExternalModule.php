@@ -43,7 +43,11 @@ class InstantConcatenateExternalModule extends AbstractExternalModule
 									value = value + $('[name=\"'+src[i]+'\"]').val();
 								}
 								console.log('Concatenating to '+value);
-								$('[name=\"" . $destField . "\"]').val(value);
+								var destination = $('[name=\"" . $destField . "\"]');
+								destination.val(value);
+								
+								// Trigger a change event for other modules, branching logic, etc.
+								destination.change();
 							}";
 					foreach ($srcFields as $src) {
 						echo "$('[name=\"" . $src . "\"]').change(function() { concat(); }); ";
