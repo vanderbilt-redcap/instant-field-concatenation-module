@@ -3,7 +3,7 @@
 
 	"namespace": "Vanderbilt\\InstantConcatenateExternalModule",
 
-	"description": "This module concatenates fields and places the result in another field instantly",
+	"description": "This module concatenates fields and places the result in another field instantly. It uses JavaScript and not PHP. It happens upon the user leaving the field.",
 
 	"authors": [
 		{
