@@ -22,6 +22,8 @@ $data = json_decode(REDCap::getData([
     'fields' => $fieldNames,
 ]), true);
 
+echo "Record, Field, Expected, Actual<br>";
+
 $recordsToSave = [];
 foreach($data as $record){
     $recordId = $record[$recordIdFieldName];
@@ -53,7 +55,7 @@ foreach($data as $record){
             $actual = $record[$destField];
 
             if($expected !== $actual){
-                echo "$recordId, $expected, $actual<br>";
+                echo "$recordId, $destField, $expected, $actual<br>";
                 $recordToSave[$recordIdFieldName] = $recordId;
                 $recordToSave[$destField] = $expected;
             }
