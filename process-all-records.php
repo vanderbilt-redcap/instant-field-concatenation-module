@@ -73,5 +73,14 @@ foreach($data as $record){
 }
 
 echo "<pre>";
-var_dump($recordsToSave);
+if(isset($_GET['save'])){
+    if(empty($recordsToSave)){
+        die('nothing to save');
+    }
+
+    var_dump(REDCap::saveData($_GET['pid'], 'json', json_encode($recordsToSave)));
+}
+else{
+    var_dump($recordsToSave);
+}
 echo "</pre>";
