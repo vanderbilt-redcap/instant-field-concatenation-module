@@ -80,7 +80,5 @@ if(isset($_GET['save'])){
 
     var_dump(REDCap::saveData($_GET['pid'], 'json', json_encode($recordsToSave)));
 }
-else{
-    var_dump($recordsToSave);
-}
+
 echo "</pre>";
