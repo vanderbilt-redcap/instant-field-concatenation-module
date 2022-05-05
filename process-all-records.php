@@ -55,11 +55,23 @@ foreach($data as $record){
             $actual = $record[$destField];
 
             if($expected !== $actual){
-                $updated = 'No';
-                if(!empty($expected)){
+                $saveValue = !empty($expected);
+
+                if($saveValue){
+                    $choices = array_filter($module->getChoiceLabels($destField));
+                    if(!empty($choices) && !isset($choices[$expected])){
+                        // This is a choice field, and the expected value is not a valid choice option.
+                        $saveValue = false;
+                    }
+                }
+
+                if($saveValue){
                     $updated = 'Yes';
                     $recordToSave[$recordIdFieldName] = $recordId;
                     $recordToSave[$destField] = $expected;
+                }
+                else{
+                    $updated = 'No';
                 }
 
                 echo "$recordId, $destField, $expected, $actual, $updated<br>";
