@@ -73,8 +73,8 @@ foreach($data as $record){
                 else{
                     $updated = 'No';
                 }
-
-                echo "$recordId, $destField, $expected, $actual, $updated<br>";
+				## Need to escape before echoing
+                echo htmlspecialchars("$recordId, $destField, $expected, $actual, $updated", ENT_QUOTES)."<br />";
             }
         }
     }
