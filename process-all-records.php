@@ -1,13 +1,47 @@
 <?php
+$prefix = htmlspecialchars($_GET['prefix']);
+$page = 'process-all-records';
+$pid = htmlspecialchars($_GET['pid']);
+$save = isset($_GET['save']) ? $_GET['save'] : 'false'; 
+
+$toSave = ($save === 'true');
+$processOnlyChecked = ($toSave ? '' : 'checked');
+$processAndSaveChecked = ($toSave ? 'checked' : '');
+
+echo
+"<form method='get'> 
+    <input type='hidden' name='prefix' value= '$prefix'>
+    <input type='hidden' name='page' value='$page'>
+    <input type='hidden' name='pid' value='$pid'>
+    <input type='hidden' name='submitted' value='true'>
+
+    <input type='radio' id='process_only' name='save' value='false' $processOnlyChecked>
+    <label for='process_only'>Process but not save</label><br>
+    <input type='radio' id='process_and_save' name='save' value='true' $processAndSaveChecked>
+    <label for='process_and_save'>Process and save</label><br>
+
+    <input type='submit' value='Submit'>
+</form>";
+
+echo "<hr>";
+
 if(SUPER_USER !== '1'){
-    die("You're not allowed to view this page!");
+    die("You're not allowed to use this function!");
 }
 
-$recordIdFieldName = json_decode(\REDCap::getDataDictionary($_GET['pid'], 'json'), true)[0]['field_name'];
+if(!isset($_GET['submitted']))
+{
+    die('Choose an option.');
+}
 
+
+// $recordIdFieldName = json_decode(\REDCap::getDataDictionary($_GET['pid'], 'json'), true)[0]['field_name'];
+$dict = json_decode(\REDCap::getDataDictionary($_GET['pid'], 'json'), true);
+$recordIdFieldName = $dict[0]['field_name'];
 $fieldNames = [
     $recordIdFieldName
 ];
+
 
 $subSettings = $module->getSubSettings('concatenated-fields');
 foreach($subSettings as $field_data) {
@@ -27,6 +61,7 @@ echo "Record, Field, Expected, Actual, Update Performed<br>";
 $recordsToSave = [];
 foreach($data as $record){
     $recordId = $record[$recordIdFieldName];
+
     $recordToSave = [];
     foreach($subSettings as $field_data) {
         $destField = $field_data['destination'];
@@ -41,15 +76,54 @@ foreach($data as $record){
         }
 
         
-        if ($destField) {
+        if ($destField) 
+        {
             $expected = '';
 
-            foreach ($srcFields as $src) {
+            foreach ($srcFields as $src) 
+            {
                 if($field_data['spaces'] && !empty($expected)){
                     $expected .= " ";
                 }
+                // $expected .= $record[$src];
 
-                $expected .= $record[$src];
+                $srcChecked = $record[$src];
+                foreach ($dict as $field) 
+                {
+                    if ($field['field_name'] == $src) 
+                    {
+                        // Consider date may not be saved as the same format as date validation
+                        // concatenation need to be made with the date validation format to be consistant with real time concatenation in openned form
+                        $validationType = $field['text_validation_type_or_show_slider_number'];
+                        if(strpos($validationType, 'date_') !== false)
+                        {
+                            // Define the date formats corresponding to REDCap's validation types
+                            $dateFormats = ['date_dmy' => 'd-m-Y',
+                                            'date_mdy' => 'm-d-Y',
+                                            'date_ymd' => 'Y-m-d'];
+                            
+                            // find the validation/format of $srcChecked and save in a DateTime object
+                            $dateObject = false;
+                            $validationSaved = "";
+                            foreach($dateFormats as $validation => $format)
+                            {
+                                $dateObject = DateTime::createFromFormat($format, $srcChecked);
+                                if($dateObject && $dateObject->format($format) == $srcChecked)
+                                {
+                                    $validationSaved = $validation;
+                                    break;
+                                }
+                            }
+                            // replace with correct validation type
+                            if($dateObject && $validationSaved != $validationType)
+                            {
+                                $srcChecked = $dateObject->format($dateFormats[$validationType]);
+                            }
+                        }
+                        break;
+                    }
+                }               
+                $expected .= $srcChecked;
             }
 
             $actual = $record[$destField];
@@ -85,11 +159,14 @@ foreach($data as $record){
 }
 
 echo "<pre>";
-if(isset($_GET['save'])){
+// if(isset($_GET['save']))
+if ($save=='true')
+{
     if(empty($recordsToSave)){
         die('nothing to save');
     }
 
     var_dump(REDCap::saveData($_GET['pid'], 'json', json_encode($recordsToSave)));
 }
+
 echo "</pre>";

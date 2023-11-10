@@ -5,11 +5,11 @@ use ExternalModules\ExternalModules;
 
 class InstantConcatenateExternalModule extends AbstractExternalModule
 {
-	function hook_data_entry_form($project_id, $record, $instrument, $event_id, $group_id) {
+	function redcap_data_entry_form($project_id, $record, $instrument, $event_id, $group_id) {
 		$this->concatenate($project_id, $record, $instrument, $event_id, $group_id);
 	}
 
-	function hook_survey_page($project_id, $record, $instrument, $event_id, $group_id, $survey_hash, $response_id) {
+	function redcap_survey_page($project_id, $record, $instrument, $event_id, $group_id, $survey_hash, $response_id) {
 		$this->concatenate($project_id, $record, $instrument, $event_id, $group_id);
 	}
 
@@ -50,7 +50,7 @@ class InstantConcatenateExternalModule extends AbstractExternalModule
 								destination.change();
 							}";
 					foreach ($srcFields as $src) {
-						echo "$('[name=\"" . $src . "\"]').change(function() { concat(); }); ";
+						echo "$('[name=\"" . $src . "\"]').blur(function() { concat(); }); ";
 					}
 					echo " });\n";
 					echo "</script>";
