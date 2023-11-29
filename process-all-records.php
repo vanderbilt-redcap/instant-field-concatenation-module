@@ -129,13 +129,24 @@ foreach($data as $record){
             $actual = $record[$destField];
 
             if($expected !== $actual){
-                $saveValue = !empty($expected);
+                //deleted by ws 2023-11-29:keep the destination field consistant with the sources, the empty fields can be intentional
+                // the following conditions has been changed accordingly to keep the logic for choice field
+                // $saveValue = !empty($expected); 
 
-                if($saveValue){
+                if($saveValue)
+                {
                     $choices = array_filter($module->getChoiceLabels($destField));
-                    if(!empty($choices) && !isset($choices[$expected])){
-                        // This is a choice field, and the expected value is not a valid choice option.
-                        $saveValue = false;
+                    if(!empty($choices) )
+                    {
+                        if(empty($expected))
+                        {
+                            $saveValue = false;
+                        }
+                        else if(!isset($choices[$expected]))
+                        {                            
+                            // This is a choice field, and the expected value is not a valid choice option.
+                            $saveValue = false;
+                        }
                     }
                 }
 
