@@ -132,7 +132,7 @@ foreach($data as $record){
                 //deleted by ws 2023-11-29:keep the destination field consistant with the sources, the empty fields can be intentional
                 // the following conditions has been changed accordingly to keep the logic for choice field
                 // $saveValue = !empty($expected); 
-
+                $saveValue = true;
                 if($saveValue)
                 {
                     $choices = array_filter($module->getChoiceLabels($destField));
