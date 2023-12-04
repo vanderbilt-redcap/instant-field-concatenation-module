@@ -176,8 +176,12 @@ if ($save=='true')
     if(empty($recordsToSave)){
         die('nothing to save');
     }
-
-    var_dump(REDCap::saveData($_GET['pid'], 'json', json_encode($recordsToSave)));
+    echo "All data processed and saved. <br>";
+    var_dump(REDCap::saveData($_GET['pid'], 'json', json_encode($recordsToSave),$overwriteBehavior = 'overwrite'));
+}
+else
+{
+    echo "Nothing saved.";
 }
 
 echo "</pre>";
