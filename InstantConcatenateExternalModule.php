@@ -5,11 +5,11 @@ use ExternalModules\ExternalModules;
 
 class InstantConcatenateExternalModule extends AbstractExternalModule
 {
-	function hook_data_entry_form($project_id, $record, $instrument, $event_id, $group_id) {
+	function redcap_data_entry_form($project_id, $record, $instrument, $event_id, $group_id) {
 		$this->concatenate($project_id, $record, $instrument, $event_id, $group_id);
 	}
 
-	function hook_survey_page($project_id, $record, $instrument, $event_id, $group_id, $survey_hash, $response_id) {
+	function redcap_survey_page($project_id, $record, $instrument, $event_id, $group_id, $survey_hash, $response_id) {
 		$this->concatenate($project_id, $record, $instrument, $event_id, $group_id);
 	}
 
@@ -37,7 +37,8 @@ class InstantConcatenateExternalModule extends AbstractExternalModule
 								var src = " . json_encode($srcFields) . ";
 								var space = '" . $space . "';
 								for (var i=0; i < src.length; i++) {
-									if (i > 0) {
+									if (value.length>0) 
+									{
 										value = value + space;
 									}
 									value = value + $('[name=\"'+src[i]+'\"]').val();
@@ -50,7 +51,7 @@ class InstantConcatenateExternalModule extends AbstractExternalModule
 								destination.change();
 							}";
 					foreach ($srcFields as $src) {
-						echo "$('[name=\"" . $src . "\"]').change(function() { concat(); }); ";
+						echo "$('[name=\"" . $src . "\"]').blur(function() { concat(); }); ";
 					}
 					echo " });\n";
 					echo "</script>";

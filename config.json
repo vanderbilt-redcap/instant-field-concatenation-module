@@ -5,6 +5,8 @@
 
 	"description": "This module concatenates fields and places the result in another field instantly. It uses JavaScript and not PHP. It happens upon the user leaving the field.",
 
+	"framework-version": 12,
+
 	"authors": [
 		{
 			"name": "Scott J. Pearson",
@@ -13,12 +15,15 @@
 		}
 	],
 	
-	"permissions": [
-                "hook_survey_page",
-                "hook_data_entry_form"
-	],
-
 	"links": {
+		"project": [
+            {
+                "name": "Concatenate Fields in All records",
+                "icon": "fa fa-tasks",
+                "url": "process-all-records.php",
+                "show-header-and-footer": true
+            }
+        ]
 	},
 
 	"project-settings": [
