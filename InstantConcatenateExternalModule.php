@@ -5,11 +5,11 @@ use ExternalModules\ExternalModules;
 
 class InstantConcatenateExternalModule extends AbstractExternalModule
 {
-	function hook_data_entry_form($project_id, $record, $instrument, $event_id, $group_id) {
+	function redcap_data_entry_form($project_id, $record, $instrument, $event_id, $group_id) {
 		$this->concatenate($project_id, $record, $instrument, $event_id, $group_id);
 	}
 
-	function hook_survey_page($project_id, $record, $instrument, $event_id, $group_id, $survey_hash, $response_id) {
+	function redcap_survey_page($project_id, $record, $instrument, $event_id, $group_id, $survey_hash, $response_id) {
 		$this->concatenate($project_id, $record, $instrument, $event_id, $group_id);
 	}
 
@@ -29,9 +29,8 @@ class InstantConcatenateExternalModule extends AbstractExternalModule
 				}
 
 				if ($destField) {
-					echo "<script>
+					echo "<script type='text/javascript'>
 						$(document).ready(function() {
-							console.log('Instant Concatenate Loaded');
 							function concat() {
 								var value = '';
 								var src = " . json_encode($srcFields) . ";
@@ -42,15 +41,13 @@ class InstantConcatenateExternalModule extends AbstractExternalModule
 									}
 									value = value + $('[name=\"'+src[i]+'\"]').val();
 								}
-								console.log('Concatenating to '+value);
 								var destination = $('[name=\"" . $destField . "\"]');
 								destination.val(value);
-								
 								// Trigger a change event for other modules, branching logic, etc.
 								destination.change();
 							}";
 					foreach ($srcFields as $src) {
-						echo "$('[name=\"" . $src . "\"]').change(function() { concat(); }); ";
+						echo "$('[name=\"" . $src . "\"]').blur(function() { concat(); }); ";
 					}
 					echo " });\n";
 					echo "</script>";

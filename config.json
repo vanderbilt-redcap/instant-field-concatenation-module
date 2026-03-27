@@ -3,7 +3,7 @@
 
 	"namespace": "Vanderbilt\\InstantConcatenateExternalModule",
 
-	"description": "This module concatenates fields and places the result in another field instantly. It uses JavaScript and not PHP. It happens upon the user leaving the field.",
+	"description": "Concatenates the values of specified fields (Text/Notes fields only) and immediately places their combined result into another field on the *same* form/survey. This action is triggered when a source field's value is modified on the form/survey.",
 
 	"authors": [
 		{
@@ -14,8 +14,8 @@
 	],
 	
 	"permissions": [
-                "hook_survey_page",
-                "hook_data_entry_form"
+                "redcap_survey_page",
+                "redcap_data_entry_form"
 	],
 
 	"links": {
